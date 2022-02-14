@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <title>Anomalies</title>
+    <style>
+        table,
+        td,
+        th {
+            border: 1px solid;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h1 class="outliers__headline">
+            Outliers in the Blockchain Data Set
+        </h1>
+        <br>
+        <h2>Anomalies based on when outputs sum is not equal to inputs sum</h2>
+        <table>
+            <tr>
+                <th>
+                    txId
+                </th>
+                <th>
+                    Inputs Sum
+                </th>
+                <th>
+                    Outputs Sum
+                </th>
+                <th>
+                    Fee
+                </th>
+                <th>
+                    Difference
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+            <tr v-for="anomaly in anomalies.differences">
+                <td>
+                    {{anomaly.txId}}
+                </td>
+                <td>
+                    {{anomaly.inputSum}}
+                </td>
+                <td>
+                    {{anomaly.outputSum}}
+                </td>
+                <td>
+                    {{anomaly.fee}}
+                </td>
+                <td>
+                    {{anomaly.inputSum - anomaly.outputSum}}
+                </td>
+                <td>
+                    {{anomaly.date}}
+                </td>
+            </tr>
+        </table>
+
+        <h2>Anomalies based on outliers on the transferred amount</h2>
+
+        <table>
+            <tr>
+                <th>
+                    Upper Bound
+                </th>
+                <th>
+                    Lower Bound
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    {{anomalies.outliers.upperBound}}
+                </td>
+                <td>
+                    {{anomalies.outliers.lowerBound}}
+                </td>
+            </tr>
+        </table>
+        <br>
+        <table>
+            <tr>
+                <th>
+                    txId
+                </th>
+                <th>
+                    Trransfered Amount
+                </th>
+                <th>
+                    Date
+                </th>
+            </tr>
+            <tr v-for="anomaly in anomalies.outliers.outliers">
+                <td>
+                    {{anomaly.txId}}
+                </td>
+                <td>
+                    {{anomaly.transferedAmount}}
+                </td>
+                <td>
+                    {{anomaly.date}}
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                anomalies: {}
+            },
+            created: function () {
+                fetch('http://localhost:3000/anomalies').then(response => response.json()).then(
+                    data => this.anomalies = data);
+                console.log(this.anomalies)
+            },
+            methods: {
+                fetchData: function () {
+
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
